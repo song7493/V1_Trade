@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>V1_Trade.App</RootNamespace>
+    <AssemblyName>V1_Trade</AssemblyName>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Adapters\Ocx\OcxAdapter.cs" />
+    <Compile Include="..\Infrastructure\Eventing\EventBus.cs" />
+    <Compile Include="..\Infrastructure\Sequencing\SequenceService.cs" />
+    <Compile Include="..\Infrastructure\UI\UIHelper.cs" />
+    <Compile Include="..\Infrastructure\Telemetry\TelemetryClient.cs" />
+    <Compile Include="..\Infrastructure\Logging\Logger.cs" />
+    <Compile Include="..\Domain\Models\TradeModel.cs" />
+    <Compile Include="..\Domain\Services\TradeService.cs" />
+    <Compile Include="..\Screens\QuoteBoard\QuoteBoardScreen.cs" />
+    <Compile Include="..\Screens\OrderMonitor\OrderMonitorScreen.cs" />
+    <Compile Include="..\Screens\PriceLadder\PriceLadderScreen.cs" />
+    <Compile Include="..\Screens\TimeAndSales\TimeAndSalesScreen.cs" />
+    <Compile Include="..\Screens\PositionPnL\PositionPnLScreen.cs" />
+  </ItemGroup>
+</Project>
