@@ -55,14 +55,20 @@ namespace V1_Trade.Infrastructure.Configuration
             for (int i = 0; i < parts.Length - 1; i++)
             {
                 var part = parts[i];
-                if (!current.TryGetValue(part, out var next) || next is not Dictionary<string, object> dict)
+                object next;
+                Dictionary<string, object> dict;
+                if (!current.TryGetValue(part, out next) || !(next is Dictionary<string, object>))
                 {
                     dict = new Dictionary<string, object>();
                     current[part] = dict;
                 }
+                else
+                {
+                    dict = (Dictionary<string, object>)next;
+                }
                 current = dict;
             }
-            current[parts[^1]] = value;
+            current[parts[parts.Length - 1]] = value;
             Save();
         }
 

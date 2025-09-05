@@ -1,0 +1,16 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ "*" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: microsoft/setup-msbuild@v1
+      - name: Restore
+        run: msbuild V1_Trade.sln /t:Restore
+      - name: Build
+        run: msbuild V1_Trade.sln /p:Configuration=Release
