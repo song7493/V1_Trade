@@ -14,14 +14,17 @@ namespace V1_Trade.Infrastructure.UI
 
         private AppThemeService()
         {
-            var name = AppConfig.Get("Ui:FontName", "Malgun Gothic");
-            var size = AppConfig.Get("Ui:FontSize", 12f);
-            CurrentFont = new Font(name, size);
+            var name = AppConfig.Get<string>("Ui:FontName", null);
+            var size = AppConfig.Get<float>("Ui:FontSize", 0f);
+            if (!string.IsNullOrEmpty(name) && size > 0)
+            {
+                CurrentFont = new Font(name, size);
+            }
         }
 
         public void SetFont(string name, float size)
         {
-            if (CurrentFont.Name == name && Math.Abs(CurrentFont.Size - size) < 0.1f)
+            if (CurrentFont != null && CurrentFont.Name == name && Math.Abs(CurrentFont.Size - size) < 0.1f)
                 return;
 
             CurrentFont = new Font(name, size);

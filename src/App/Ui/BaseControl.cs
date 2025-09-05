@@ -14,13 +14,17 @@ namespace V1_Trade.App.Ui
             DoubleBuffered = true;
             AutoScaleMode = AutoScaleMode.Dpi;
             ThemeService.ThemeChanged += OnThemeChanged;
-            ApplyFontRecursive(this, ThemeService.CurrentFont);
-            ControlAdded += (s, e) => ApplyFontRecursive(e.Control, ThemeService.CurrentFont);
+            ControlAdded += (s, e) =>
+            {
+                if (ThemeService.CurrentFont != null)
+                    ApplyFontRecursive(e.Control, ThemeService.CurrentFont);
+            };
         }
 
         private void OnThemeChanged(object sender, EventArgs e)
         {
-            ApplyFontRecursive(this, ThemeService.CurrentFont);
+            if (ThemeService.CurrentFont != null)
+                ApplyFontRecursive(this, ThemeService.CurrentFont);
         }
 
         protected override void Dispose(bool disposing)

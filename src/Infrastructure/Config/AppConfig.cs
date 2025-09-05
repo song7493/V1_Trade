@@ -19,14 +19,7 @@ namespace V1_Trade.Infrastructure.Configuration
             }
             else
             {
-                _data = new Dictionary<string, object>
-                {
-                    ["Ui"] = new Dictionary<string, object>
-                    {
-                        ["FontName"] = "Malgun Gothic",
-                        ["FontSize"] = 12
-                    }
-                };
+                _data = new Dictionary<string, object>();
                 Save();
             }
         }
