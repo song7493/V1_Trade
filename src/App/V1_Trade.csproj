@@ -12,6 +12,8 @@
     <Compile Include="..\Infrastructure\Eventing\EventBus.cs" />
     <Compile Include="..\Infrastructure\Sequencing\SequenceService.cs" />
     <Compile Include="..\Infrastructure\UI\UIHelper.cs" />
+    <Compile Include="..\Infrastructure\UI\AppThemeService.cs" />
+    <Compile Include="..\Infrastructure\Config\Config.cs" />
     <Compile Include="..\Infrastructure\Telemetry\TelemetryClient.cs" />
     <Compile Include="..\Infrastructure\Logging\Logger.cs" />
     <Compile Include="..\Domain\Models\TradeModel.cs" />
@@ -19,7 +21,17 @@
     <Compile Include="..\Screens\QuoteBoard\QuoteBoardScreen.cs" />
     <Compile Include="..\Screens\OrderMonitor\OrderMonitorScreen.cs" />
     <Compile Include="..\Screens\PriceLadder\PriceLadderScreen.cs" />
+    <Compile Include="..\Screens\PriceLadder\PriceLadderControl.cs" />
     <Compile Include="..\Screens\TimeAndSales\TimeAndSalesScreen.cs" />
     <Compile Include="..\Screens\PositionPnL\PositionPnLScreen.cs" />
+    <Compile Include="..\Screens\Settings\AppearanceForm.cs" />
+    <Compile Include="..\Screens\Settings\AppearanceForm.Designer.cs" />
+    <Compile Include="Ui\BaseForm.cs" />
+    <Compile Include="Ui\BaseControl.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
