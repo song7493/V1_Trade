@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using V1_Trade.App.Ui;
 using V1_Trade.Screens.Settings;
@@ -30,8 +31,18 @@ namespace V1_Trade.App
             Controls.Add(_menuStrip);
             MainMenuStrip = _menuStrip;
 
-            var settings = new ToolStripMenuItem("설정");
-            settings.DropDownItems.Add(new ToolStripMenuItem("환경설정...", (s, e) => new AppearanceForm().ShowDialog(this)));
+            var settings = new ToolStripMenuItem("설정")
+            {
+                Image = SystemIcons.Application.ToBitmap()
+            };
+
+            var appearance = new ToolStripMenuItem("환경설정...")
+            {
+                Image = SystemIcons.Application.ToBitmap()
+            };
+            appearance.Click += (s, e) => new AppearanceForm().ShowDialog(this);
+
+            settings.DropDownItems.Add(appearance);
             _menuStrip.Items.Add(settings);
 
             Text = "V1 Trade";
