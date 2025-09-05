@@ -1,37 +1,37 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 
 namespace V1_Trade.Infrastructure.Config
 {
-    public class Config
+    public static class AppConfig
     {
-        private readonly string _filePath;
-        private readonly JavaScriptSerializer _serializer = new JavaScriptSerializer();
-        private Dictionary<string, object> _data;
+        private static readonly string FilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+        private static Dictionary<string, object> _data;
 
-        public Config()
+        static AppConfig()
         {
-            _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
-            if (File.Exists(_filePath))
+            if (File.Exists(FilePath))
             {
-                var json = File.ReadAllText(_filePath, Encoding.UTF8);
-                _data = _serializer.Deserialize<Dictionary<string, object>>(json) ?? new Dictionary<string, object>();
+                var json = File.ReadAllText(FilePath);
+                _data = JsonConvert.DeserializeObject<Dictionary<string, object>>(json) ?? new Dictionary<string, object>();
             }
             else
             {
                 _data = new Dictionary<string, object>();
+                Save();
             }
         }
 
-        public T Get<T>(string key, T defaultValue)
+        public static T Get<T>(string key, T defaultValue)
         {
             if (TryTraverse(key, out var value))
             {
                 try
                 {
+                    if (value is T typed)
+                        return typed;
                     return (T)Convert.ChangeType(value, typeof(T));
                 }
                 catch
@@ -41,14 +41,14 @@ namespace V1_Trade.Infrastructure.Config
             return defaultValue;
         }
 
-        public void Set(string key, object value)
+        public static void Set(string key, object value)
         {
             var parts = key.Split(':');
             var current = _data;
             for (int i = 0; i < parts.Length - 1; i++)
             {
                 var part = parts[i];
-                if (!current.TryGetValue(part, out var next) || !(next is Dictionary<string, object> dict))
+                if (!current.TryGetValue(part, out var next) || next is not Dictionary<string, object> dict)
                 {
                     dict = new Dictionary<string, object>();
                     current[part] = dict;
@@ -59,7 +59,7 @@ namespace V1_Trade.Infrastructure.Config
             Save();
         }
 
-        private bool TryTraverse(string key, out object value)
+        private static bool TryTraverse(string key, out object value)
         {
             var parts = key.Split(':');
             object current = _data;
@@ -79,10 +79,10 @@ namespace V1_Trade.Infrastructure.Config
             return true;
         }
 
-        private void Save()
+        private static void Save()
         {
-            var json = _serializer.Serialize(_data);
-            File.WriteAllText(_filePath, json, Encoding.UTF8);
+            var json = JsonConvert.SerializeObject(_data, Formatting.Indented);
+            File.WriteAllText(FilePath, json);
         }
     }
 }

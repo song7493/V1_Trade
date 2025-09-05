@@ -6,8 +6,6 @@ namespace V1_Trade.Infrastructure.UI
 {
     public sealed class AppThemeService
     {
-        private readonly Config _config = new Config();
-
         public static AppThemeService Instance { get; } = new AppThemeService();
 
         public Font CurrentFont { get; private set; }
@@ -16,8 +14,8 @@ namespace V1_Trade.Infrastructure.UI
 
         private AppThemeService()
         {
-            var name = _config.Get("Ui:FontName", "Malgun Gothic");
-            var size = _config.Get("Ui:FontSize", 12f);
+            var name = AppConfig.Get("Ui:FontName", "Malgun Gothic");
+            var size = AppConfig.Get("Ui:FontSize", 12f);
             CurrentFont = new Font(name, size);
         }
 
@@ -27,8 +25,8 @@ namespace V1_Trade.Infrastructure.UI
                 return;
 
             CurrentFont = new Font(name, size);
-            _config.Set("Ui:FontName", name);
-            _config.Set("Ui:FontSize", size);
+            AppConfig.Set("Ui:FontName", name);
+            AppConfig.Set("Ui:FontSize", size);
             ThemeChanged?.Invoke(this, EventArgs.Empty);
         }
     }
