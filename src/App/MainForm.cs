@@ -1,8 +1,9 @@
 using System.Windows.Forms;
+using V1_Trade.Infrastructure.UI;
 
 namespace V1_Trade.App
 {
-    public class MainForm : Form
+    public class MainForm : BaseForm
     {
         public MainForm()
         {
