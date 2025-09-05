@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace V1_Trade.Infrastructure.Config
+namespace V1_Trade.Infrastructure.Configuration
 {
     public static class AppConfig
     {
@@ -19,7 +19,14 @@ namespace V1_Trade.Infrastructure.Config
             }
             else
             {
-                _data = new Dictionary<string, object>();
+                _data = new Dictionary<string, object>
+                {
+                    ["Ui"] = new Dictionary<string, object>
+                    {
+                        ["FontName"] = "Malgun Gothic",
+                        ["FontSize"] = 12
+                    }
+                };
                 Save();
             }
         }

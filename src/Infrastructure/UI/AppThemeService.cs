@@ -1,6 +1,6 @@
 using System;
 using System.Drawing;
-using V1_Trade.Infrastructure.Config;
+using V1_Trade.Infrastructure.Configuration;
 
 namespace V1_Trade.Infrastructure.UI
 {
