@@ -1,9 +1,11 @@
 using System;
 using System.Windows.Forms;
+using V1_Trade.App.Ui;
+using V1_Trade.Screens.Settings;
 
 namespace V1_Trade.App
 {
-    public class MainForm : Form
+    public class MainForm : BaseForm
     {
         private readonly MenuStrip _menuStrip;
         private readonly StatusStrip _statusStrip;
@@ -26,8 +28,12 @@ namespace V1_Trade.App
             Controls.Add(_workspaceHost);
             Controls.Add(_statusStrip);
             Controls.Add(_menuStrip);
-
             MainMenuStrip = _menuStrip;
+
+            var settings = new ToolStripMenuItem("설정");
+            settings.DropDownItems.Add(new ToolStripMenuItem("환경설정...", (s, e) => new AppearanceForm().ShowDialog(this)));
+            _menuStrip.Items.Add(settings);
+
             Text = "V1 Trade";
             WindowState = FormWindowState.Maximized;
         }
