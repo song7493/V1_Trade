@@ -3,31 +3,68 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net472</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <RootNamespace>V1_Trade.App</RootNamespace>
+    <RootNamespace>V1_Trade</RootNamespace>
     <AssemblyName>V1_Trade</AssemblyName>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\Adapters\Ocx\OcxAdapter.cs" />
-    <Compile Include="..\Infrastructure\Eventing\EventBus.cs" />
-    <Compile Include="..\Infrastructure\Sequencing\SequenceService.cs" />
-    <Compile Include="..\Infrastructure\UI\UIHelper.cs" />
-    <Compile Include="..\Infrastructure\UI\AppThemeService.cs" />
-    <Compile Include="..\Infrastructure\Config\Config.cs" />
-    <Compile Include="..\Infrastructure\Telemetry\TelemetryClient.cs" />
-    <Compile Include="..\Infrastructure\Logging\Logger.cs" />
-    <Compile Include="..\Domain\Models\TradeModel.cs" />
-    <Compile Include="..\Domain\Services\TradeService.cs" />
-    <Compile Include="..\Screens\QuoteBoard\QuoteBoardScreen.cs" />
-    <Compile Include="..\Screens\OrderMonitor\OrderMonitorScreen.cs" />
-    <Compile Include="..\Screens\PriceLadder\PriceLadderScreen.cs" />
-    <Compile Include="..\Screens\PriceLadder\PriceLadderControl.cs" />
-    <Compile Include="..\Screens\TimeAndSales\TimeAndSalesScreen.cs" />
-    <Compile Include="..\Screens\PositionPnL\PositionPnLScreen.cs" />
-    <Compile Include="..\Screens\Settings\AppearanceForm.cs" />
-    <Compile Include="..\Screens\Settings\AppearanceForm.Designer.cs" />
-    <Compile Include="Ui\BaseForm.cs" />
-    <Compile Include="Ui\BaseControl.cs" />
+    <Compile Include="..\Adapters\Ocx\OcxAdapter.cs">
+      <Link>Adapters\Ocx\OcxAdapter.cs</Link>
+    </Compile>
+    <Compile Include="..\Infrastructure\Eventing\EventBus.cs">
+      <Link>Infrastructure\Eventing\EventBus.cs</Link>
+    </Compile>
+    <Compile Include="..\Infrastructure\Sequencing\SequenceService.cs">
+      <Link>Infrastructure\Sequencing\SequenceService.cs</Link>
+    </Compile>
+    <Compile Include="..\Infrastructure\UI\UIHelper.cs">
+      <Link>Infrastructure\UI\UIHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Infrastructure\UI\AppThemeService.cs">
+      <Link>Infrastructure\UI\AppThemeService.cs</Link>
+    </Compile>
+    <Compile Include="..\Infrastructure\Config\AppConfig.cs">
+      <Link>Infrastructure\Config\AppConfig.cs</Link>
+    </Compile>
+    <Compile Include="..\Infrastructure\Telemetry\TelemetryClient.cs">
+      <Link>Infrastructure\Telemetry\TelemetryClient.cs</Link>
+    </Compile>
+    <Compile Include="..\Infrastructure\Logging\Logger.cs">
+      <Link>Infrastructure\Logging\Logger.cs</Link>
+    </Compile>
+    <Compile Include="..\Domain\Models\TradeModel.cs">
+      <Link>Domain\Models\TradeModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Domain\Services\TradeService.cs">
+      <Link>Domain\Services\TradeService.cs</Link>
+    </Compile>
+    <Compile Include="..\Screens\QuoteBoard\QuoteBoardScreen.cs">
+      <Link>Screens\QuoteBoard\QuoteBoardScreen.cs</Link>
+    </Compile>
+    <Compile Include="..\Screens\OrderMonitor\OrderMonitorScreen.cs">
+      <Link>Screens\OrderMonitor\OrderMonitorScreen.cs</Link>
+    </Compile>
+    <Compile Include="..\Screens\PriceLadder\PriceLadderScreen.cs">
+      <Link>Screens\PriceLadder\PriceLadderScreen.cs</Link>
+    </Compile>
+    <Compile Include="..\Screens\PriceLadder\PriceLadderControl.cs">
+      <Link>Screens\PriceLadder\PriceLadderControl.cs</Link>
+    </Compile>
+    <Compile Include="..\Screens\TimeAndSales\TimeAndSalesScreen.cs">
+      <Link>Screens\TimeAndSales\TimeAndSalesScreen.cs</Link>
+    </Compile>
+    <Compile Include="..\Screens\PositionPnL\PositionPnLScreen.cs">
+      <Link>Screens\PositionPnL\PositionPnLScreen.cs</Link>
+    </Compile>
+    <Compile Include="..\Screens\Settings\AppearanceForm.cs">
+      <Link>Screens\Settings\AppearanceForm.cs</Link>
+    </Compile>
+    <Compile Include="..\Screens\Settings\AppearanceForm.Designer.cs">
+      <Link>Screens\Settings\AppearanceForm.Designer.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.*" />
   </ItemGroup>
   <ItemGroup>
     <None Include="appsettings.json">
