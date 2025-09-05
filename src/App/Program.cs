@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using V1_Trade.Infrastructure.UI;
 
 namespace V1_Trade.App
 {
@@ -10,6 +11,9 @@ namespace V1_Trade.App
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            // Load persisted font settings before any forms are created.
+            FontManager.Instance.LoadSettings();
+
             Application.Run(new MainForm());
         }
     }
