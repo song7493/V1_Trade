@@ -6,6 +6,8 @@ namespace V1_Trade.App
 {
     public class MainForm : BaseForm
     {
+        private readonly MenuStrip _menu;
+        private readonly TabControl _tabs;
         private readonly StatusStrip _statusStrip;
         private readonly ToolStripStatusLabel _springLabel;
         private readonly ToolStripStatusLabel _clockLabel;
@@ -14,6 +16,22 @@ namespace V1_Trade.App
         public MainForm()
         {
             Text = "V1 Trade (Baseline)";
+
+            _menu = new MenuStrip();
+            ToolStripItem[] menuItems = new ToolStripItem[]
+            {
+                new ToolStripMenuItem("Futures"),
+                new ToolStripMenuItem("Options"),
+                new ToolStripMenuItem("Accounts"),
+                new ToolStripMenuItem("Analytics"),
+                new ToolStripMenuItem("Test"),
+                new ToolStripMenuItem("Settings")
+            };
+            _menu.Items.AddRange(menuItems);
+            MainMenuStrip = _menu;
+
+            _tabs = new TabControl();
+            _tabs.Dock = DockStyle.Fill;
 
             _statusStrip = new StatusStrip();
 
@@ -26,7 +44,9 @@ namespace V1_Trade.App
             _statusStrip.Items.Add(_springLabel);
             _statusStrip.Items.Add(_clockLabel);
 
+            Controls.Add(_tabs);
             Controls.Add(_statusStrip);
+            Controls.Add(_menu);
 
             _clockTimer = new Timer();
             _clockTimer.Interval = 1000;
@@ -57,7 +77,9 @@ namespace V1_Trade.App
             {
                 _clockTimer.Tick -= TimerTick;
                 _clockTimer.Dispose();
+                _tabs.Dispose();
                 _statusStrip.Dispose();
+                _menu.Dispose();
             }
 
             base.Dispose(disposing);
