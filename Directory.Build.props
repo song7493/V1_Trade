@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+</Project>
