@@ -8,29 +8,17 @@ namespace V1_Trade.Infrastructure.UI
     /// </summary>
     public class BaseForm : Form
     {
-        public BaseForm()
-        {
-            FontManager.Instance.FontChanged += OnFontChanged;
-        }
-
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            FontManager.Instance.ApplyFontDeep(this);
-        }
-
-        private void OnFontChanged(object sender, EventArgs e)
-        {
-            FontManager.Instance.ApplyFontDeep(this);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
+            try
             {
-                FontManager.Instance.FontChanged -= OnFontChanged;
+                FontManager.ApplyFontDeep(this);
             }
-            base.Dispose(disposing);
+            catch
+            {
+                // ignore
+            }
         }
     }
 }
