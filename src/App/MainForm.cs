@@ -30,16 +30,19 @@ namespace V1_Trade.App
             _menuStrip.Items.Add(CreateMenuItem("Settings"));
             MainMenuStrip = _menuStrip;
 
+            foreach (ToolStripItem it in _menuStrip.Items)
+                if (it is ToolStripMenuItem mi) mi.DropDownItems.Clear();
+
             // TabControl
             _tabControl = new TabControl();
             _tabControl.Dock = DockStyle.Fill;
             _tabControl.TabPages.Clear();
-            _tabControl.TabPages.Add(new TabPage("Futures"));
-            _tabControl.TabPages.Add(new TabPage("Options"));
-            _tabControl.TabPages.Add(new TabPage("Accounts"));
-            _tabControl.TabPages.Add(new TabPage("Analytics"));
-            _tabControl.TabPages.Add(new TabPage("Test"));
-            _tabControl.TabPages.Add(new TabPage("Settings"));
+            _tabControl.TabPages.Add(new TabPage("Futures") { Name = "Futures" });
+            _tabControl.TabPages.Add(new TabPage("Options") { Name = "Options" });
+            _tabControl.TabPages.Add(new TabPage("Accounts") { Name = "Accounts" });
+            _tabControl.TabPages.Add(new TabPage("Analytics") { Name = "Analytics" });
+            _tabControl.TabPages.Add(new TabPage("Test") { Name = "Test" });
+            _tabControl.TabPages.Add(new TabPage("Settings") { Name = "Settings" });
 
             // StatusStrip
             _statusStrip = new StatusStrip();
@@ -80,11 +83,19 @@ namespace V1_Trade.App
             _clockLabel.Text = DateTime.Now.ToString("yyyy-MM-dd dddd tt h:mm:ss");
         }
 
-        private static ToolStripMenuItem CreateMenuItem(string text)
+        private ToolStripMenuItem CreateMenuItem(string text)
         {
             var item = new ToolStripMenuItem(text);
-            item.DropDownItems.Add("Placeholder");
+            item.Click += MenuItemClick;
             return item;
+        }
+
+        private void MenuItemClick(object sender, EventArgs e)
+        {
+            if (sender is ToolStripMenuItem mi && _tabControl.TabPages.ContainsKey(mi.Text))
+            {
+                _tabControl.SelectTab(mi.Text);
+            }
         }
 
         protected override void Dispose(bool disposing)
