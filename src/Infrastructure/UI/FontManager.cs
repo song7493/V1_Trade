@@ -1,94 +1,71 @@
 using System;
 using System.Configuration;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace V1_Trade.Infrastructure.UI
 {
     /// <summary>
-    /// Manages global font preferences for the application.
+    /// Provides helpers to apply a global font across the UI.
     /// </summary>
-    public sealed class FontManager
+    public static class FontManager
     {
-        private static readonly Lazy<FontManager> _instance = new Lazy<FontManager>(() => new FontManager());
+        public static bool Enabled { get; private set; } = true;
+        public static string CurrentFontName { get; private set; } = "Malgun Gothic";
+        public static float CurrentFontSize { get; private set; } = 12f;
 
-        public static FontManager Instance => _instance.Value;
-
-        private FontManager()
+        public static void LoadSettings()
         {
-            LoadSettings();
+            var e = ConfigurationManager.AppSettings["UI.Font.Enabled"];
+            if (bool.TryParse(e, out var enabled)) Enabled = enabled;
+            var n = ConfigurationManager.AppSettings["UI.Font.Name"];
+            if (!string.IsNullOrEmpty(n)) CurrentFontName = n;
+            var s = ConfigurationManager.AppSettings["UI.Font.Size"];
+            if (float.TryParse(s, out var size)) CurrentFontSize = size;
         }
 
-        public string CurrentFontName { get; private set; } = "Malgun Gothic";
-        public float CurrentFontSize { get; private set; } = 12f;
-
-        public event EventHandler FontChanged;
-
-        /// <summary>
-        /// Applies current font settings to the provided control and all of its children.
-        /// </summary>
-        public void ApplyFontDeep(Control root)
+        public static void ApplyFontDeep(Control root)
         {
-            if (root == null) return;
-
+            if (root == null || !Enabled) return;
             var font = new Font(CurrentFontName, CurrentFontSize);
-            ApplyFontRecursive(root, font);
+            ApplyToControl(root, font);
         }
 
-        private static void ApplyFontRecursive(Control control, Font font)
+        private static void ApplyToControl(Control c, Font font)
         {
-            control.Font = font;
-            foreach (Control child in control.Controls)
+            try
             {
-                ApplyFontRecursive(child, font);
+                if (c.Font == null || c.Font.Name != font.Name || Math.Abs(c.Font.Size - font.Size) > 0.01f)
+                    c.Font = font;
             }
+            catch { }
+
+            foreach (Control child in c.Controls)
+                ApplyToControl(child, font);
+
+            if (c.ContextMenuStrip != null)
+                ApplyToToolStrip(c.ContextMenuStrip, font);
+            if (c is MenuStrip ms)
+                ApplyToToolStrip(ms, font);
+            if (c is ToolStrip ts)
+                ApplyToToolStrip(ts, font);
         }
 
-        /// <summary>
-        /// Updates the current font and notifies subscribers.
-        /// </summary>
-        public void SetFont(string name, float size)
+        private static void ApplyToToolStrip(ToolStrip strip, Font font)
         {
-            if (string.Equals(name, CurrentFontName, StringComparison.Ordinal) && Math.Abs(size - CurrentFontSize) < 0.1f)
-                return;
-
-            CurrentFontName = name;
-            CurrentFontSize = size;
-            SaveSettings();
-            FontChanged?.Invoke(this, EventArgs.Empty);
-            // Apply to all open forms.
-            foreach (Form form in Application.OpenForms.Cast<Form>())
-            {
-                ApplyFontDeep(form);
-            }
+            try { strip.Font = font; } catch { }
+            foreach (ToolStripItem item in strip.Items)
+                ApplyToToolStripItem(item, font);
         }
 
-        /// <summary>
-        /// Loads font settings from configuration.
-        /// </summary>
-        public void LoadSettings()
+        private static void ApplyToToolStripItem(ToolStripItem item, Font font)
         {
-            var name = ConfigurationManager.AppSettings["Ui.Font.Name"];
-            var sizeValue = ConfigurationManager.AppSettings["Ui.Font.Size"];
-            if (!string.IsNullOrEmpty(name))
-                CurrentFontName = name;
-            if (float.TryParse(sizeValue, out var parsed))
-                CurrentFontSize = parsed;
-        }
-
-        /// <summary>
-        /// Saves font settings to configuration.
-        /// </summary>
-        public void SaveSettings()
-        {
-            var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            config.AppSettings.Settings.Remove("Ui.Font.Name");
-            config.AppSettings.Settings.Remove("Ui.Font.Size");
-            config.AppSettings.Settings.Add("Ui.Font.Name", CurrentFontName);
-            config.AppSettings.Settings.Add("Ui.Font.Size", CurrentFontSize.ToString());
-            config.Save(ConfigurationSaveMode.Modified);
-            ConfigurationManager.RefreshSection("appSettings");
+            try { item.Font = font; } catch { }
+            if (item is ToolStripDropDownItem dd)
+                foreach (ToolStripItem sub in dd.DropDownItems)
+                    ApplyToToolStripItem(sub, font);
+            if (item is ToolStripControlHost host && host.Control != null)
+                ApplyToControl(host.Control, font);
         }
     }
 }
