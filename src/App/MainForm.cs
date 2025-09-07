@@ -59,6 +59,8 @@ namespace V1_Trade.App
             Controls.Add(_tabControl);
             Controls.Add(_statusStrip);
 
+            WireMenuTabSync();
+
             ResumeLayout(false);
             PerformLayout();
 
@@ -68,6 +70,31 @@ namespace V1_Trade.App
 
             UpdateClock();
             _clockTimer.Start();
+        }
+
+        private void WireMenuTabSync()
+        {
+            foreach (ToolStripMenuItem menuItem in _menuStrip.Items)
+            {
+                TabPage targetPage = null;
+
+                foreach (TabPage page in _tabControl.TabPages)
+                {
+                    if (string.Equals(page.Text, menuItem.Text, StringComparison.Ordinal))
+                    {
+                        targetPage = page;
+                        break;
+                    }
+                }
+
+                if (targetPage != null)
+                {
+                    menuItem.MouseDown += (s, e) =>
+                    {
+                        _tabControl.SelectedTab = targetPage;
+                    };
+                }
+            }
         }
 
         private void TimerTick(object sender, EventArgs e)
