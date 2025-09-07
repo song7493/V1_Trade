@@ -9,28 +9,18 @@ namespace V1_Trade.Infrastructure.UI
     /// <summary>
     /// Manages global font preferences for the application.
     /// </summary>
-    public sealed class FontManager
+    public static class FontManager
     {
-        private static readonly Lazy<FontManager> _instance = new Lazy<FontManager>(() => new FontManager());
-
-        public static FontManager Instance => _instance.Value;
-
-        private FontManager()
-        {
-            LoadSettings();
-        }
-
-        public string CurrentFontName { get; private set; } = "Malgun Gothic";
-        public float CurrentFontSize { get; private set; } = 12f;
-
-        public event EventHandler FontChanged;
+        public static bool Enabled { get; private set; } = true;
+        public static string CurrentFontName { get; private set; } = "Malgun Gothic";
+        public static float CurrentFontSize { get; private set; } = 12f;
 
         /// <summary>
         /// Applies current font settings to the provided control and all of its children.
         /// </summary>
-        public void ApplyFontDeep(Control root)
+        public static void ApplyFontDeep(Control root)
         {
-            if (root == null) return;
+            if (!Enabled || root == null) return;
 
             var font = new Font(CurrentFontName, CurrentFontSize);
             ApplyFontRecursive(root, font);
@@ -39,25 +29,57 @@ namespace V1_Trade.Infrastructure.UI
         private static void ApplyFontRecursive(Control control, Font font)
         {
             control.Font = font;
+
             foreach (Control child in control.Controls)
             {
                 ApplyFontRecursive(child, font);
             }
+
+            if (control is MenuStrip menuStrip)
+            {
+                foreach (ToolStripItem item in menuStrip.Items)
+                    ApplyFontToToolStripItem(item, font);
+            }
+            else if (control is ToolStrip toolStrip)
+            {
+                foreach (ToolStripItem item in toolStrip.Items)
+                    ApplyFontToToolStripItem(item, font);
+            }
+        }
+
+        private static void ApplyFontToToolStripItem(ToolStripItem item, Font font)
+        {
+            item.Font = font;
+
+            if (item is ToolStripDropDownItem dropDown)
+            {
+                foreach (ToolStripItem subItem in dropDown.DropDownItems)
+                    ApplyFontToToolStripItem(subItem, font);
+            }
+
+            if (item is ToolStripControlHost host && host.Control != null)
+            {
+                ApplyFontRecursive(host.Control, font);
+            }
         }
 
         /// <summary>
-        /// Updates the current font and notifies subscribers.
+        /// Updates the current font and applies it to all open forms.
         /// </summary>
-        public void SetFont(string name, float size)
+        public static void SetFont(string name, float size)
         {
-            if (string.Equals(name, CurrentFontName, StringComparison.Ordinal) && Math.Abs(size - CurrentFontSize) < 0.1f)
+            if (string.Equals(name, CurrentFontName, StringComparison.Ordinal) &&
+                Math.Abs(size - CurrentFontSize) < 0.1f)
+            {
                 return;
+            }
 
             CurrentFontName = name;
             CurrentFontSize = size;
             SaveSettings();
-            FontChanged?.Invoke(this, EventArgs.Empty);
-            // Apply to all open forms.
+
+            if (!Enabled) return;
+
             foreach (Form form in Application.OpenForms.Cast<Form>())
             {
                 ApplyFontDeep(form);
@@ -67,10 +89,14 @@ namespace V1_Trade.Infrastructure.UI
         /// <summary>
         /// Loads font settings from configuration.
         /// </summary>
-        public void LoadSettings()
+        public static void LoadSettings()
         {
-            var name = ConfigurationManager.AppSettings["Ui.Font.Name"];
-            var sizeValue = ConfigurationManager.AppSettings["Ui.Font.Size"];
+            var enabledValue = ConfigurationManager.AppSettings["UI.Font.Enabled"];
+            if (bool.TryParse(enabledValue, out var enabled))
+                Enabled = enabled;
+
+            var name = ConfigurationManager.AppSettings["UI.Font.Name"];
+            var sizeValue = ConfigurationManager.AppSettings["UI.Font.Size"];
             if (!string.IsNullOrEmpty(name))
                 CurrentFontName = name;
             if (float.TryParse(sizeValue, out var parsed))
@@ -80,16 +106,21 @@ namespace V1_Trade.Infrastructure.UI
         /// <summary>
         /// Saves font settings to configuration.
         /// </summary>
-        public void SaveSettings()
+        public static void SaveSettings()
         {
             var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            config.AppSettings.Settings.Remove("Ui.Font.Name");
-            config.AppSettings.Settings.Remove("Ui.Font.Size");
-            config.AppSettings.Settings.Add("Ui.Font.Name", CurrentFontName);
-            config.AppSettings.Settings.Add("Ui.Font.Size", CurrentFontSize.ToString());
+            var settings = config.AppSettings.Settings;
+
+            settings.Remove("UI.Font.Enabled");
+            settings.Remove("UI.Font.Name");
+            settings.Remove("UI.Font.Size");
+
+            settings.Add("UI.Font.Enabled", Enabled.ToString());
+            settings.Add("UI.Font.Name", CurrentFontName);
+            settings.Add("UI.Font.Size", CurrentFontSize.ToString());
+
             config.Save(ConfigurationSaveMode.Modified);
             ConfigurationManager.RefreshSection("appSettings");
         }
     }
 }
-
