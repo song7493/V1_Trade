@@ -55,9 +55,9 @@ namespace V1_Trade.App
             _statusStrip.Items.Add(_clockLabel);
 
             // Add controls in specific order
+            Controls.Add(_menuStrip);
             Controls.Add(_tabControl);
             Controls.Add(_statusStrip);
-            Controls.Add(_menuStrip);
 
             ResumeLayout(false);
             PerformLayout();
