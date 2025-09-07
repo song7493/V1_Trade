@@ -65,11 +65,6 @@ namespace V1_Trade.App
             _clockTimer = new Timer();
             _clockTimer.Interval = 1000;
             _clockTimer.Tick += TimerTick;
-        }
-
-        protected override void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
 
             UpdateClock();
             _clockTimer.Start();
