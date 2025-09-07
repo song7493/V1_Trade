@@ -11,8 +11,7 @@ namespace V1_Trade.App
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            // Load persisted font settings before any forms are created.
-            FontManager.Instance.LoadSettings();
+            var _ = FontManager.GetConfiguredFontOrNull();
 
             Application.Run(new MainForm());
         }
