@@ -1,10 +1,9 @@
 using System;
 using System.Windows.Forms;
-using V1_Trade.Infrastructure.UI;
 
 namespace V1_Trade.App
 {
-    public class MainForm : BaseForm
+    public class MainForm : FormBase
     {
         private readonly StatusStrip _statusStrip;
         private readonly ToolStripStatusLabel _springLabel;

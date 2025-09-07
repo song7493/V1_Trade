@@ -1,9 +1,9 @@
 // Placeholder
-using V1_Trade.Infrastructure.UI;
+using V1_Trade.App;
 
 namespace V1_Trade.Screens.Settings
 {
-    public class AppearanceForm : BaseForm
+    public class AppearanceForm : FormBase
     {
     }
 }
