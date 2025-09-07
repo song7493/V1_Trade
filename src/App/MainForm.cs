@@ -18,14 +18,42 @@ namespace V1_Trade.App
             Text = "V1 Trade (Baseline)";
 
             _menuStrip = new MenuStrip();
-            _menuStrip.Items.Add(new ToolStripMenuItem("File"));
+            _menuStrip.Dock = DockStyle.Top;
+
+            var mnuFutures = new ToolStripMenuItem("Futures");
+            mnuFutures.DropDownItems.Add(new ToolStripMenuItem("Placeholder…"));
+            _menuStrip.Items.Add(mnuFutures);
+
+            var mnuOptions = new ToolStripMenuItem("Options");
+            mnuOptions.DropDownItems.Add(new ToolStripMenuItem("Placeholder…"));
+            _menuStrip.Items.Add(mnuOptions);
+
+            var mnuAccounts = new ToolStripMenuItem("Accounts");
+            mnuAccounts.DropDownItems.Add(new ToolStripMenuItem("Placeholder…"));
+            _menuStrip.Items.Add(mnuAccounts);
+
+            var mnuAnalytics = new ToolStripMenuItem("Analytics");
+            mnuAnalytics.DropDownItems.Add(new ToolStripMenuItem("Placeholder…"));
+            _menuStrip.Items.Add(mnuAnalytics);
+
+            var mnuTest = new ToolStripMenuItem("Test");
+            mnuTest.DropDownItems.Add(new ToolStripMenuItem("Placeholder…"));
+            _menuStrip.Items.Add(mnuTest);
+
+            var mnuSettings = new ToolStripMenuItem("Settings");
+            mnuSettings.DropDownItems.Add(new ToolStripMenuItem("Placeholder…"));
+            _menuStrip.Items.Add(mnuSettings);
+
             MainMenuStrip = _menuStrip;
 
             _tabControl = new TabControl();
             _tabControl.Dock = DockStyle.Fill;
-            _tabControl.TabPages.Add(new TabPage("Tab 1"));
-            _tabControl.TabPages.Add(new TabPage("Tab 2"));
-            _tabControl.TabPages.Add(new TabPage("Tab 3"));
+            _tabControl.TabPages.Add(new TabPage("Futures"));
+            _tabControl.TabPages.Add(new TabPage("Options"));
+            _tabControl.TabPages.Add(new TabPage("Accounts"));
+            _tabControl.TabPages.Add(new TabPage("Analytics"));
+            _tabControl.TabPages.Add(new TabPage("Test"));
+            _tabControl.TabPages.Add(new TabPage("Settings"));
 
             _statusStrip = new StatusStrip();
 
@@ -38,9 +66,9 @@ namespace V1_Trade.App
             _statusStrip.Items.Add(_springLabel);
             _statusStrip.Items.Add(_clockLabel);
 
-            Controls.Add(_tabControl);
-            Controls.Add(_statusStrip);
             Controls.Add(_menuStrip);
+            Controls.Add(_statusStrip);
+            Controls.Add(_tabControl);
 
             _clockTimer = new Timer();
             _clockTimer.Interval = 1000;
