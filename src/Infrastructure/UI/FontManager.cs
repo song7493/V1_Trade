@@ -12,6 +12,54 @@ namespace V1_Trade.Infrastructure.UI
         private const string DefaultFontName = "맑은 고딕";
         private const float DefaultFontSize = 12f;
 
+        private static string _currentFontName = DefaultFontName;
+        private static float _currentFontSize = DefaultFontSize;
+
+        static FontManager()
+        {
+            try
+            {
+                var name = ConfigurationManager.AppSettings["UI.Font.Name"];
+                if (!string.IsNullOrEmpty(name))
+                    _currentFontName = name;
+
+                var size = ConfigurationManager.AppSettings["UI.Font.Size"];
+                if (float.TryParse(size, out var parsedSize))
+                    _currentFontSize = parsedSize;
+            }
+            catch
+            {
+                _currentFontName = DefaultFontName;
+                _currentFontSize = DefaultFontSize;
+            }
+        }
+
+        public static string CurrentFontName => _currentFontName;
+        public static float CurrentFontSize => _currentFontSize;
+
+        public static void SetFont(string fontName, float fontSize)
+        {
+            if (!string.IsNullOrEmpty(fontName))
+                _currentFontName = fontName;
+            _currentFontSize = fontSize;
+        }
+
+        public static void Save()
+        {
+            try
+            {
+                var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                config.AppSettings.Settings["UI.Font.Name"].Value = _currentFontName;
+                config.AppSettings.Settings["UI.Font.Size"].Value = _currentFontSize.ToString();
+                config.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection("appSettings");
+            }
+            catch
+            {
+                // ignore
+            }
+        }
+
         /// <summary>
         /// Applies the configured font to the given control and all of its descendants.
         /// </summary>
@@ -20,26 +68,7 @@ namespace V1_Trade.Infrastructure.UI
             if (root == null)
                 return;
 
-            string fontName = DefaultFontName;
-            float fontSize = DefaultFontSize;
-
-            try
-            {
-                var name = ConfigurationManager.AppSettings["UI.Font.Name"];
-                if (!string.IsNullOrEmpty(name))
-                    fontName = name;
-
-                var size = ConfigurationManager.AppSettings["UI.Font.Size"];
-                if (float.TryParse(size, out var parsedSize))
-                    fontSize = parsedSize;
-            }
-            catch
-            {
-                fontName = DefaultFontName;
-                fontSize = DefaultFontSize;
-            }
-
-            ApplyToControl(root, fontName, fontSize);
+            ApplyToControl(root, _currentFontName, _currentFontSize);
         }
 
         private static void ApplyToControl(Control control, string fontName, float fontSize)

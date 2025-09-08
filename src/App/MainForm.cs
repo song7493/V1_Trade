@@ -21,12 +21,19 @@ namespace V1_Trade.App
             // MenuStrip
             _menuStrip = new MenuStrip();
             _menuStrip.Dock = DockStyle.Top;
-            _menuStrip.Items.Add(CreateMenuItem("Futures"));
-            _menuStrip.Items.Add(CreateMenuItem("Options"));
-            _menuStrip.Items.Add(CreateMenuItem("Accounts"));
-            _menuStrip.Items.Add(CreateMenuItem("Analytics"));
-            _menuStrip.Items.Add(CreateMenuItem("Test"));
-            _menuStrip.Items.Add(CreateMenuItem("Settings"));
+            _menuStrip.Items.Add(new ToolStripMenuItem("Futures"));
+            _menuStrip.Items.Add(new ToolStripMenuItem("Options"));
+            _menuStrip.Items.Add(new ToolStripMenuItem("Accounts"));
+            _menuStrip.Items.Add(new ToolStripMenuItem("Analytics"));
+            _menuStrip.Items.Add(new ToolStripMenuItem("Test"));
+
+            var settingsMenu = new ToolStripMenuItem("Settings");
+            var fontMenu = new ToolStripMenuItem("Font Settings...");
+            fontMenu.ShortcutKeys = Keys.Control | Keys.Shift | Keys.F;
+            fontMenu.Click += FontSettingsClick;
+            settingsMenu.DropDownItems.Add(fontMenu);
+            _menuStrip.Items.Add(settingsMenu);
+
             MainMenuStrip = _menuStrip;
 
             // TabControl
@@ -79,11 +86,10 @@ namespace V1_Trade.App
             _clockLabel.Text = DateTime.Now.ToString("yyyy-MM-dd dddd tt h:mm:ss");
         }
 
-        private static ToolStripMenuItem CreateMenuItem(string text)
+        private void FontSettingsClick(object sender, EventArgs e)
         {
-            var item = new ToolStripMenuItem(text);
-            item.DropDownItems.Add("Placeholder");
-            return item;
+            using (var dlg = new FontSettingsForm())
+                dlg.ShowDialog(this);
         }
 
         protected override void Dispose(bool disposing)
