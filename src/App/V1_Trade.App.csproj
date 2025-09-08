@@ -37,6 +37,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="MainForm.cs" />
     <Compile Include="FormBase.cs" />
+    <Compile Include="..\Screens\Settings\FontSettingsForm.cs" />
     <Compile Include="..\Infrastructure\UI\FontManager.cs" />
     <Compile Include="..\Infrastructure\UI\BaseControl.cs" />
     <Compile Include="..\Infrastructure\UI\UIColors.cs" />

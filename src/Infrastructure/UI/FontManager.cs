@@ -42,6 +42,32 @@ namespace V1_Trade.Infrastructure.UI
             ApplyToControl(root, fontName, fontSize);
         }
 
+        /// <summary>
+        /// Sets the global font and optionally persists the selection.
+        /// </summary>
+        public static void SetFont(string fontName, float fontSize, bool persist)
+        {
+            foreach (Form form in Application.OpenForms)
+                ApplyToControl(form, fontName, fontSize);
+
+            if (!persist)
+                return;
+
+            try
+            {
+                var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                var settings = config.AppSettings.Settings;
+                settings["UI.Font.Name"].Value = fontName;
+                settings["UI.Font.Size"].Value = fontSize.ToString();
+                config.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection("appSettings");
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
         private static void ApplyToControl(Control control, string fontName, float fontSize)
         {
             if (control == null)

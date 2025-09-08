@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using V1_Trade.Screens.Settings;
 
 namespace V1_Trade.App
 {
@@ -15,24 +16,27 @@ namespace V1_Trade.App
         public MainForm()
         {
             Text = "V1 Trade (Baseline)";
+            KeyPreview = true;
 
             SuspendLayout();
 
             // MenuStrip
-            _menuStrip = new MenuStrip();
-            _menuStrip.Dock = DockStyle.Top;
-            _menuStrip.Items.Add(CreateMenuItem("Futures"));
-            _menuStrip.Items.Add(CreateMenuItem("Options"));
-            _menuStrip.Items.Add(CreateMenuItem("Accounts"));
-            _menuStrip.Items.Add(CreateMenuItem("Analytics"));
-            _menuStrip.Items.Add(CreateMenuItem("Test"));
-            _menuStrip.Items.Add(CreateMenuItem("Settings"));
+            _menuStrip = new MenuStrip { Dock = DockStyle.Top };
+            _menuStrip.Items.Add(CreateTabMenuItem("Futures", 0));
+            _menuStrip.Items.Add(CreateTabMenuItem("Options", 1));
+            _menuStrip.Items.Add(CreateTabMenuItem("Accounts", 2));
+            _menuStrip.Items.Add(CreateTabMenuItem("Analytics", 3));
+            _menuStrip.Items.Add(CreateTabMenuItem("Test", 4));
+
+            var settingsMenu = new ToolStripMenuItem("Settings");
+            var fontItem = new ToolStripMenuItem("Font Settings...");
+            fontItem.Click += (s, e) => new FontSettingsForm().ShowDialog(this);
+            settingsMenu.DropDownItems.Add(fontItem);
+            _menuStrip.Items.Add(settingsMenu);
             MainMenuStrip = _menuStrip;
 
             // TabControl
-            _tabControl = new TabControl();
-            _tabControl.Dock = DockStyle.Fill;
-            _tabControl.TabPages.Clear();
+            _tabControl = new TabControl { Dock = DockStyle.Fill };
             _tabControl.TabPages.Add(new TabPage("Futures"));
             _tabControl.TabPages.Add(new TabPage("Options"));
             _tabControl.TabPages.Add(new TabPage("Accounts"));
@@ -41,19 +45,15 @@ namespace V1_Trade.App
             _tabControl.TabPages.Add(new TabPage("Settings"));
 
             // StatusStrip
-            _statusStrip = new StatusStrip();
-            _statusStrip.Dock = DockStyle.Bottom;
+            _statusStrip = new StatusStrip { Dock = DockStyle.Bottom };
 
-            _springLabel = new ToolStripStatusLabel();
-            _springLabel.Spring = true;
+            _springLabel = new ToolStripStatusLabel { Spring = true };
 
-            _clockLabel = new ToolStripStatusLabel();
-            _clockLabel.Alignment = ToolStripItemAlignment.Right;
+            _clockLabel = new ToolStripStatusLabel { Alignment = ToolStripItemAlignment.Right };
 
             _statusStrip.Items.Add(_springLabel);
             _statusStrip.Items.Add(_clockLabel);
 
-            // Add controls in specific order
             Controls.Add(_menuStrip);
             Controls.Add(_tabControl);
             Controls.Add(_statusStrip);
@@ -61,8 +61,7 @@ namespace V1_Trade.App
             ResumeLayout(false);
             PerformLayout();
 
-            _clockTimer = new Timer();
-            _clockTimer.Interval = 1000;
+            _clockTimer = new Timer { Interval = 1000 };
             _clockTimer.Tick += TimerTick;
 
             UpdateClock();
@@ -79,11 +78,21 @@ namespace V1_Trade.App
             _clockLabel.Text = DateTime.Now.ToString("yyyy-MM-dd dddd tt h:mm:ss");
         }
 
-        private static ToolStripMenuItem CreateMenuItem(string text)
+        private ToolStripMenuItem CreateTabMenuItem(string text, int index)
         {
             var item = new ToolStripMenuItem(text);
-            item.DropDownItems.Add("Placeholder");
+            item.Click += (s, e) => _tabControl.SelectedIndex = index;
             return item;
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == (Keys.Control | Keys.Shift | Keys.F))
+            {
+                new FontSettingsForm().ShowDialog(this);
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         protected override void Dispose(bool disposing)
