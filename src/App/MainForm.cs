@@ -15,6 +15,7 @@ namespace V1_Trade.App
         public MainForm()
         {
             Text = "V1 Trade (Baseline)";
+            KeyPreview = true;
 
             SuspendLayout();
 
@@ -26,7 +27,18 @@ namespace V1_Trade.App
             _menuStrip.Items.Add(CreateMenuItem("Accounts"));
             _menuStrip.Items.Add(CreateMenuItem("Analytics"));
             _menuStrip.Items.Add(CreateMenuItem("Test"));
-            _menuStrip.Items.Add(CreateMenuItem("Settings"));
+
+            for (int i = _menuStrip.Items.Count - 1; i >= 0; i--)
+                if (_menuStrip.Items[i] is ToolStripMenuItem mi && mi.Text == "Settings")
+                    _menuStrip.Items.RemoveAt(i);
+
+            var settingsItem = new ToolStripMenuItem("Settings");
+            var fontSettingsItem = new ToolStripMenuItem("Font Settings…");
+            fontSettingsItem.Click += (s, e) => new V1_Trade.Screens.Settings.FontSettingsForm().ShowDialog(this);
+            fontSettingsItem.ShortcutKeys = Keys.Control | Keys.Shift | Keys.F;
+            fontSettingsItem.ShowShortcutKeys = true;
+            settingsItem.DropDownItems.Add(fontSettingsItem);
+            _menuStrip.Items.Add(settingsItem);
             MainMenuStrip = _menuStrip;
 
             // TabControl
@@ -38,7 +50,6 @@ namespace V1_Trade.App
             _tabControl.TabPages.Add(new TabPage("Accounts"));
             _tabControl.TabPages.Add(new TabPage("Analytics"));
             _tabControl.TabPages.Add(new TabPage("Test"));
-            _tabControl.TabPages.Add(new TabPage("Settings"));
 
             // StatusStrip
             _statusStrip = new StatusStrip();
@@ -82,8 +93,18 @@ namespace V1_Trade.App
         private static ToolStripMenuItem CreateMenuItem(string text)
         {
             var item = new ToolStripMenuItem(text);
-            item.DropDownItems.Add("Placeholder");
             return item;
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.Control && e.Shift && e.KeyCode == Keys.F)
+            {
+                new V1_Trade.Screens.Settings.FontSettingsForm().ShowDialog(this);
+                e.Handled = true;
+                return;
+            }
+            base.OnKeyDown(e);
         }
 
         protected override void Dispose(bool disposing)
