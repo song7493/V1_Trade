@@ -12,6 +12,28 @@ namespace V1_Trade.Infrastructure.UI
         private const string DefaultFontName = "맑은 고딕";
         private const float DefaultFontSize = 12f;
 
+        public static string CurrentFontName { get; private set; } = DefaultFontName;
+        public static float CurrentFontSize { get; private set; } = DefaultFontSize;
+
+        static FontManager()
+        {
+            try
+            {
+                var name = ConfigurationManager.AppSettings["UI.Font.Name"];
+                if (!string.IsNullOrEmpty(name))
+                    CurrentFontName = name;
+
+                var size = ConfigurationManager.AppSettings["UI.Font.Size"];
+                if (float.TryParse(size, out var parsedSize))
+                    CurrentFontSize = parsedSize;
+            }
+            catch
+            {
+                CurrentFontName = DefaultFontName;
+                CurrentFontSize = DefaultFontSize;
+            }
+        }
+
         /// <summary>
         /// Applies the configured font to the given control and all of its descendants.
         /// </summary>
@@ -20,27 +42,35 @@ namespace V1_Trade.Infrastructure.UI
             if (root == null)
                 return;
 
-            string fontName = DefaultFontName;
-            float fontSize = DefaultFontSize;
-
-            try
-            {
-                var name = ConfigurationManager.AppSettings["UI.Font.Name"];
-                if (!string.IsNullOrEmpty(name))
-                    fontName = name;
-
-                var size = ConfigurationManager.AppSettings["UI.Font.Size"];
-                if (float.TryParse(size, out var parsedSize))
-                    fontSize = parsedSize;
-            }
-            catch
-            {
-                fontName = DefaultFontName;
-                fontSize = DefaultFontSize;
-            }
-
-            ApplyToControl(root, fontName, fontSize);
+            ApplyToControl(root, CurrentFontName, CurrentFontSize);
         }
+
+        public static void SetFont(string name, float size, bool save)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                name = DefaultFontName;
+
+            if (size <= 0)
+                size = DefaultFontSize;
+
+            CurrentFontName = name;
+            CurrentFontSize = size;
+
+            if (save)
+            {
+                var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                config.AppSettings.Settings["UI.Font.Name"].Value = CurrentFontName;
+                config.AppSettings.Settings["UI.Font.Size"].Value = CurrentFontSize.ToString();
+                config.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection("appSettings");
+            }
+
+            foreach (Form f in Application.OpenForms)
+                Apply(f);
+        }
+
+        public static void SetFont(string name, float size)
+            => SetFont(name, size, true);
 
         private static void ApplyToControl(Control control, string fontName, float fontSize)
         {
