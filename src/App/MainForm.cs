@@ -18,17 +18,6 @@ namespace V1_Trade.App
 
             SuspendLayout();
 
-            // MenuStrip
-            _menuStrip = new MenuStrip();
-            _menuStrip.Dock = DockStyle.Top;
-            _menuStrip.Items.Add(CreateMenuItem("Futures"));
-            _menuStrip.Items.Add(CreateMenuItem("Options"));
-            _menuStrip.Items.Add(CreateMenuItem("Accounts"));
-            _menuStrip.Items.Add(CreateMenuItem("Analytics"));
-            _menuStrip.Items.Add(CreateMenuItem("Test"));
-            _menuStrip.Items.Add(CreateMenuItem("Settings"));
-            MainMenuStrip = _menuStrip;
-
             // TabControl
             _tabControl = new TabControl();
             _tabControl.Dock = DockStyle.Fill;
@@ -39,6 +28,25 @@ namespace V1_Trade.App
             _tabControl.TabPages.Add(new TabPage("Analytics"));
             _tabControl.TabPages.Add(new TabPage("Test"));
             _tabControl.TabPages.Add(new TabPage("Settings"));
+
+            // MenuStrip
+            _menuStrip = new MenuStrip();
+            _menuStrip.Dock = DockStyle.Top;
+            _menuStrip.Items.Add(CreateMenuItem("Futures"));
+            _menuStrip.Items.Add(CreateMenuItem("Options"));
+            _menuStrip.Items.Add(CreateMenuItem("Accounts"));
+            _menuStrip.Items.Add(CreateMenuItem("Analytics"));
+            _menuStrip.Items.Add(CreateMenuItem("Test"));
+            MainMenuStrip = _menuStrip;
+
+            var settingsItem = new ToolStripMenuItem("Settings");
+            var fontSettingsItem = new ToolStripMenuItem("Font Settings...");
+            fontSettingsItem.Click += (s, e) => new V1_Trade.Screens.Settings.FontSettingsForm().ShowDialog(this);
+            settingsItem.DropDownItems.Add(fontSettingsItem);
+            for (int i = _menuStrip.Items.Count - 1; i >= 0; i--)
+                if (_menuStrip.Items[i] is ToolStripMenuItem mi && mi.Text == "Settings")
+                    _menuStrip.Items.RemoveAt(i);
+            _menuStrip.Items.Add(settingsItem);
 
             // StatusStrip
             _statusStrip = new StatusStrip();
@@ -79,10 +87,20 @@ namespace V1_Trade.App
             _clockLabel.Text = DateTime.Now.ToString("yyyy-MM-dd dddd tt h:mm:ss");
         }
 
-        private static ToolStripMenuItem CreateMenuItem(string text)
+        private ToolStripMenuItem CreateMenuItem(string text)
         {
             var item = new ToolStripMenuItem(text);
-            item.DropDownItems.Add("Placeholder");
+            item.Click += (s, e) =>
+            {
+                for (int i = 0; i < _tabControl.TabPages.Count; i++)
+                {
+                    if (_tabControl.TabPages[i].Text == text)
+                    {
+                        _tabControl.SelectedIndex = i;
+                        break;
+                    }
+                }
+            };
             return item;
         }
 
