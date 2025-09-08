@@ -26,7 +26,13 @@ namespace V1_Trade.App
             _menuStrip.Items.Add(CreateMenuItem("Accounts"));
             _menuStrip.Items.Add(CreateMenuItem("Analytics"));
             _menuStrip.Items.Add(CreateMenuItem("Test"));
-            _menuStrip.Items.Add(CreateMenuItem("Settings"));
+
+            var settingsItem = CreateMenuItem("Settings");
+            var fontItem = new ToolStripMenuItem("Font Settings...");
+            fontItem.Click += (s, e) => new V1_Trade.Screens.Settings.FontSettingsForm().ShowDialog(this);
+            settingsItem.DropDownItems.Add(fontItem);
+            _menuStrip.Items.Add(settingsItem);
+
             MainMenuStrip = _menuStrip;
 
             // TabControl
@@ -81,9 +87,7 @@ namespace V1_Trade.App
 
         private static ToolStripMenuItem CreateMenuItem(string text)
         {
-            var item = new ToolStripMenuItem(text);
-            item.DropDownItems.Add("Placeholder");
-            return item;
+            return new ToolStripMenuItem(text);
         }
 
         protected override void Dispose(bool disposing)

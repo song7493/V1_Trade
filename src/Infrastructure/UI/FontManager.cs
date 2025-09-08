@@ -42,6 +42,37 @@ namespace V1_Trade.Infrastructure.UI
             ApplyToControl(root, fontName, fontSize);
         }
 
+        /// <summary>
+        /// Applies the specified font to all open forms and optionally
+        /// persists the selection to configuration.
+        /// </summary>
+        /// <param name="fontName">Font family name.</param>
+        /// <param name="fontSize">Font size.</param>
+        /// <param name="save">True to persist the settings.</param>
+        public static void SetFont(string fontName, float fontSize, bool save)
+        {
+            foreach (Form form in Application.OpenForms)
+                ApplyToControl(form, fontName, fontSize);
+
+            if (!save)
+                return;
+
+            try
+            {
+                var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                config.AppSettings.Settings.Remove("UI.Font.Name");
+                config.AppSettings.Settings.Remove("UI.Font.Size");
+                config.AppSettings.Settings.Add("UI.Font.Name", fontName);
+                config.AppSettings.Settings.Add("UI.Font.Size", fontSize.ToString());
+                config.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection("appSettings");
+            }
+            catch
+            {
+                // Ignore persistence errors
+            }
+        }
+
         private static void ApplyToControl(Control control, string fontName, float fontSize)
         {
             if (control == null)
