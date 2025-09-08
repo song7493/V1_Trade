@@ -36,9 +36,10 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="MainForm.cs" />
+    <Compile Include="FormBase.cs" />
     <Compile Include="..\Infrastructure\UI\FontManager.cs" />
-    <Compile Include="..\Infrastructure\UI\BaseForm.cs" />
     <Compile Include="..\Infrastructure\UI\BaseControl.cs" />
+    <Compile Include="..\Infrastructure\UI\UIColors.cs" />
     <Compile Include="Properties\\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

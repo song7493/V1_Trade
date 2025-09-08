@@ -11,7 +11,7 @@ namespace V1_Trade.Infrastructure.UI
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            FontManager.ApplyFontDeep(this);
+            FontManager.Apply(this);
         }
     }
 }
