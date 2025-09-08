@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using V1_Trade.Screens.Settings;
 
 namespace V1_Trade.App
 {
@@ -26,7 +27,12 @@ namespace V1_Trade.App
             _menuStrip.Items.Add(CreateMenuItem("Accounts"));
             _menuStrip.Items.Add(CreateMenuItem("Analytics"));
             _menuStrip.Items.Add(CreateMenuItem("Test"));
-            _menuStrip.Items.Add(CreateMenuItem("Settings"));
+
+            var settingsItem = new ToolStripMenuItem("Settings");
+            var fontSettingsItem = new ToolStripMenuItem("Font Settings...");
+            fontSettingsItem.Click += (s, e) => new FontSettingsForm().ShowDialog(this);
+            settingsItem.DropDownItems.Add(fontSettingsItem);
+            _menuStrip.Items.Add(settingsItem);
             MainMenuStrip = _menuStrip;
 
             // TabControl
